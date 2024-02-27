@@ -7,9 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
-// Definieren des Datei-Upload-Formulars
+// Aktualisierte Vorlage mit einem zusätzlichen Button für den Commit
 const uploadFormTmpl = `
 <html>
 <head>
@@ -19,6 +20,9 @@ const uploadFormTmpl = `
     <form enctype="multipart/form-data" action="/uploads/gpx" method="post">
         <input type="file" name="gpxfile" />
         <input type="submit" value="Hochladen" />
+    </form>
+    <form action="/commit" method="post">
+        <input type="submit" value="Commit auslösen" />
     </form>
 </body>
 </html>
@@ -107,9 +111,39 @@ func fileUploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// commitHandler führt die notwendigen Git-Befehle aus, um Änderungen zu committen und zu pushen
+func commitHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		// Hier würden Sie die Git-Befehle ausführen
+		addCmd := exec.Command("git", "add", ".")
+		commitCmd := exec.Command("git", "commit", "-m", "Aktualisierte GPX-Daten")
+		pushCmd := exec.Command("git", "push")
+
+		err := addCmd.Run()
+		if err != nil {
+			log.Fatal("Fehler beim Ausführen von 'git add': ", err)
+		}
+
+		err = commitCmd.Run()
+		if err != nil {
+			log.Fatal("Fehler beim Ausführen von 'git commit': ", err)
+		}
+
+		err = pushCmd.Run()
+		if err != nil {
+			log.Fatal("Fehler beim Ausführen von 'git push': ", err)
+		}
+
+		fmt.Fprintf(w, "Änderungen erfolgreich committet und gepusht.")
+	} else {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
 func main() {
 	http.HandleFunc("/", uploadForm)                   // Route für das Anzeigen des Formulars
 	http.HandleFunc("/uploads/gpx", fileUploadHandler) // Route für das Datei-Upload-Handling
+	http.HandleFunc("/commit", commitHandler)          // Neue Route für den Commit-Button
 
 	log.Println("Server startet auf Port :8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))

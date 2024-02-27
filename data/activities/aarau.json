@@ -1,0 +1,70 @@
+{
+    "name": "aarau",
+    "country": "Schweiz/Suisse/Svizzera/Svizra",
+    "state": "Aargau",
+    "activity_type": "",
+    "length_km": 13.248632990110442,
+    "duration": "0h 0m",
+    "moving_time": "0h 0m",
+    "total_ascent": 243.39999389648438,
+    "total_descent": 288,
+    "start_time": "0001-01-01T00:53:28+00:53",
+    "end_time": "0001-01-01T00:53:28+00:53",
+    "start_point": {
+        "latitude": 47.33904805011116,
+        "longitude": 8.050407926551998,
+        "elevation": 0
+    },
+    "end_point": {
+        "latitude": 47.39100701897405,
+        "longitude": 8.052083507180214,
+        "elevation": 0
+    },
+    "points": [
+        {
+            "latitude": 47.33904805011116,
+            "longitude": 8.050407926551998,
+            "elevation": 427.5
+        },
+        {
+            "latitude": 47.3356498782523,
+            "longitude": 8.026150440331548,
+            "elevation": 428.5
+        },
+        {
+            "latitude": 47.33744039200246,
+            "longitude": 8.01334069436416,
+            "elevation": 477.3999938964844
+        },
+        {
+            "latitude": 47.33934009633958,
+            "longitude": 8.004400319419801,
+            "elevation": 435.6999969482422
+        },
+        {
+            "latitude": 47.3461000607349,
+            "longitude": 8.005210428498685,
+            "elevation": 486.3999938964844
+        },
+        {
+            "latitude": 47.36504970979877,
+            "longitude": 8.024880264885724,
+            "elevation": 457.79998779296875
+        },
+        {
+            "latitude": 47.37865045829676,
+            "longitude": 8.030499991960824,
+            "elevation": 412.79998779296875
+        },
+        {
+            "latitude": 47.38438001112081,
+            "longitude": 8.035039841663092,
+            "elevation": 423.3999938964844
+        },
+        {
+            "latitude": 47.390750490594655,
+            "longitude": 8.051100426353514,
+            "elevation": 382.79998779296875
+        }
+    ]
+}
