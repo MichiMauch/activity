@@ -225,7 +225,7 @@ func sanitizeFileName(input string) string {
 
 // Beispiel-Implementierung für generateDescription
 func generateDescription(trackInfo *GPXTrackInfo) string {
-	//apiKey := "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" - Korrekter Key
+	//apiKey := "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"
 	apiKey := "sk-AsqrCldGm6CfyMCD1m2IT3BlbkFJjm2IYB4ntPRN3usIWKn71"
 	prompt := fmt.Sprintf("Schreibe eine kurze Beschreibung, maximum 100 Wörter, für eine %s-Aktivität mit dem Titel '%s', die in %s, %s startet. Die Strecke ist %.2f km lang, mit einer Gesamtdauer von %s inklusive Pausen. Die Route hat einen Gesamtaufstieg von %.0f Metern und einen Gesamtabstieg von %.0f Metern. Basierend auf diesen Informationen, bewerte die Route mit nur einem Wort am Ende der Beschreibung: leicht, mittel oder schwer.",
 		trackInfo.ActivityType, trackInfo.Name, trackInfo.State, trackInfo.Country, trackInfo.Length, trackInfo.Duration, trackInfo.TotalAscent, trackInfo.TotalDescent)
@@ -273,7 +273,7 @@ func generateDescription(trackInfo *GPXTrackInfo) string {
 		log.Fatalf("Fehler beim Parsen der Antwort: %v", err)
 	}
 
-	//log.Printf("Rohantwort: %s", string(respBody))
+	log.Printf("Rohantwort: %s", string(respBody))
 
 	if len(aiResp.Choices) > 0 {
 		log.Println("Generierte Beschreibung:", aiResp.Choices[0].Message.Content)
@@ -337,7 +337,7 @@ func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string) err
 slug: "%s"
 title: "%s"
 draft: false
-type: default
+type: activities
 date: "%s"
 country: "%s"
 state: "%s"
