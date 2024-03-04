@@ -24,3 +24,4 @@ difficulty: "Dies ist eine Mock-Beschreibung für Testzwecke."
 description: ""
 teaser_image: ./images/teaser/diestelberg_aarau_planetenweg_koelliken.png
 // trackpoints:
+---

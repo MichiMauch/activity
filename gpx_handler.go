@@ -515,7 +515,7 @@ difficulty: "%s"
 description: "%s"
 teaser_image: ./images/teaser/%s.png
 // trackpoints:
-`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.State, trackInfo.ActivityType,
+---`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.State, trackInfo.ActivityType,
 		trackInfo.Length, trackInfo.Duration, trackInfo.MovingTime,
 		trackInfo.TotalAscent, trackInfo.TotalDescent,
 		trackInfo.StartTime.Format(time.RFC3339), trackInfo.EndTime.Format(time.RFC3339),
