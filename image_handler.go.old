@@ -1,0 +1,126 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"image"
+	"image/png"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+
+	// Stellen Sie sicher, dass Sie das richtige Bildformat importieren
+
+	"github.com/nfnt/resize"
+)
+
+func callDalleAPI(prompt string) ([]byte, error) {
+	apiKey := "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" // Ersetzen Sie dies durch Ihren tatsächlichen API-Schlüssel
+	apiURL := "https://api.openai.com/v1/images/generations"        // Stellen Sie sicher, dass dies die aktuelle URL ist
+
+	// Konfigurieren des Anfrage-Bodys
+	data := map[string]interface{}{
+		"prompt": prompt,
+		"n":      1, // Anzahl der zu generierenden Bilder
+		// Fügen Sie hier weitere Parameter hinzu, wie in der API-Dokumentation beschrieben
+	}
+
+	body, err := json.Marshal(data)
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Marshal des Request-Bodys: %v", err)
+	}
+
+	// Erstellen der HTTP-Anfrage
+	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Erstellen der Anfrage: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", apiKey))
+
+	// Senden der Anfrage
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Senden der Anfrage: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Lesen der Antwort
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Lesen der Antwort: %v", err)
+	}
+
+	// Hier müssen Sie die Antwort parsen, um an die Bild-Daten zu gelangen
+	// Dieser Schritt hängt vom Format der Antwort ab
+	// Beispiel: Annahme, dass die Antwort direkt die Bildbytes enthält
+	return respBody, nil
+}
+
+func generateAndSaveImage(description, imageName string) {
+	respBody, err := callDalleAPI(description)
+	if err != nil {
+		log.Fatalf("Fehler bei der Bildgenerierung: %v", err)
+	}
+
+	// Parsen der JSON-Antwort, um die URL des Bildes zu extrahieren
+	var jsonResponse struct {
+		Data []struct {
+			Url string `json:"url"` // Angenommen, die API gibt eine URL zurück
+		} `json:"data"`
+	}
+
+	err = json.Unmarshal(respBody, &jsonResponse)
+	if err != nil || len(jsonResponse.Data) == 0 {
+		log.Fatalf("Fehler beim Parsen der JSON-Antwort oder keine Bild-URL gefunden: %v", err)
+	}
+
+	imageUrl := jsonResponse.Data[0].Url
+
+	// Herunterladen des Bildes von der extrahierten URL
+	response, err := http.Get(imageUrl)
+	if err != nil {
+		log.Fatalf("Fehler beim Herunterladen des Bildes: %v", err)
+	}
+	defer response.Body.Close()
+
+	imageBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("Fehler beim Lesen des Bildinhalts: %v", err)
+	}
+
+	// Laden des Bildes aus den Bytes
+	img, _, err := image.Decode(bytes.NewReader(imageBytes))
+	if err != nil {
+		log.Fatalf("Fehler beim Dekodieren des Bildes: %v", err)
+	}
+
+	// Skalieren des Bildes auf 500x500 Pixel
+	newImg := resize.Resize(500, 500, img, resize.Lanczos3)
+
+	// Öffnen einer Datei zum Speichern des skalierten Bildes
+	imagePath := fmt.Sprintf("./images/teaser/%s.png", imageName)
+	file, err := os.Create(imagePath)
+	if err != nil {
+		log.Fatalf("Fehler beim Erstellen der Datei: %v", err)
+	}
+	defer file.Close()
+
+	// Speichern des skalierten Bildes als PNG
+	err = png.Encode(file, newImg)
+	if err != nil {
+		log.Fatalf("Fehler beim Speichern des skalierten Bildes: %v", err)
+	}
+}
+
+func main() {
+	// Beispiel: Generierung und Speicherung eines Bildes
+	description := "Das Bild soll in Pixelart sein. Die Wanderung von Diestelberg nach Aarau bietet atemberaubende Ausblicke und führt entlang des Planetenwegs nach Kölliken. Entdecken Sie die landschaftliche Vielfalt des Aargaus auf dieser 18,53 km langen Strecke mit einem Gesamtaufstieg von 227 Metern und einem Gesamtabstieg von 213 Metern. Genießen Sie die abwechslungsreiche Wanderung durch malerische Dörfer und wunderschöne Natur." // Dies sollte durch Ihre generierte Beschreibung ersetzt werden
+	imageName := "Name_des_Bildes"                                                                                                                                                                                                                                                                                                                                                                                                                      // Dies sollte dem Namen des Markdown-Files entsprechen
+
+	generateAndSaveImage(description, imageName)
+}

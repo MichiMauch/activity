@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/png"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,7 +14,14 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/nfnt/resize"
 	"github.com/tkrajina/gpxgo/gpx"
+)
+
+var (
+	EnableChatGPTAPI = false
+	EnableDALL_EAPI  = false
+	defaultImagePath = "./images/default/default.png" // Pfad zum Standardbild
 )
 
 // Strukturdefinitionen
@@ -225,8 +234,11 @@ func sanitizeFileName(input string) string {
 
 // Beispiel-Implementierung für generateDescription
 func generateDescription(trackInfo *GPXTrackInfo) string {
-	//apiKey := "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"
-	apiKey := "sk-AsqrCldGm6CfyMCD1m2IT3BlbkFJjm2IYB4ntPRN3usIWKn71"
+	if !EnableChatGPTAPI {
+		log.Println("ChatGPT API ist deaktiviert. Verwende Mock-Beschreibung.")
+		return "Dies ist eine Mock-Beschreibung für Testzwecke."
+	}
+	apiKey := "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"
 	prompt := fmt.Sprintf("Schreibe eine kurze Beschreibung, maximum 100 Wörter, für eine %s-Aktivität mit dem Titel '%s', die in %s, %s startet. Die Strecke ist %.2f km lang, mit einer Gesamtdauer von %s inklusive Pausen. Die Route hat einen Gesamtaufstieg von %.0f Metern und einen Gesamtabstieg von %.0f Metern. Basierend auf diesen Informationen, bewerte die Route mit nur einem Wort am Ende der Beschreibung: leicht, mittel oder schwer.",
 		trackInfo.ActivityType, trackInfo.Name, trackInfo.State, trackInfo.Country, trackInfo.Length, trackInfo.Duration, trackInfo.TotalAscent, trackInfo.TotalDescent)
 
@@ -278,21 +290,165 @@ func generateDescription(trackInfo *GPXTrackInfo) string {
 	if len(aiResp.Choices) > 0 {
 		log.Println("Generierte Beschreibung:", aiResp.Choices[0].Message.Content)
 		return aiResp.Choices[0].Message.Content
-		/* if len(aiResp.Choices) > 0 {
-		fullResponse := aiResp.Choices[0].Message.Content
-		responseLines := strings.Split(fullResponse, "\n")
-		description := strings.Join(responseLines[:len(responseLines)-1], "\n")
-		difficulty := responseLines[len(responseLines)-1]
 
-		log.Println("Generierte Beschreibung:", description)
-		log.Println("Schwierigkeitsstufe:", difficulty)
-
-		// Hier könntest du die Beschreibung und die Schwierigkeitsstufe in deinem Markdown speichern
-		return description, difficulty // Stelle sicher, dass du die Funktion anpasst, um beide Werte zurückzugeben
-		*/
 	}
 
 	return "Es konnte keine Beschreibung generiert werden."
+}
+
+func callDalleAPI(prompt string) ([]byte, error) {
+	apiKey := "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" // Ihr tatsächlicher API-Schlüssel
+	apiURL := "https://api.openai.com/v1/images/generations"
+
+	// Konfigurieren des Anfrage-Bodys
+	data := map[string]interface{}{
+		"prompt": prompt,
+		"n":      1,
+	}
+
+	body, err := json.Marshal(data)
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Marshal des Request-Bodys: %v", err)
+	}
+
+	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Erstellen der Anfrage: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", apiKey))
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Senden der Anfrage: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Prüfen des Statuscodes der Antwort
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("API-Anfrage fehlgeschlagen mit Statuscode: %d", resp.StatusCode)
+	}
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("Fehler beim Lesen der Antwort: %v", err)
+	}
+
+	return respBody, nil
+}
+
+func generateAndSaveImage(description, imageName string) {
+	if !EnableDALL_EAPI {
+		log.Println("DALL-E API ist deaktiviert. Überspringe Bildgenerierung.")
+		copyDefaultImage(imageName)
+		return
+	}
+	log.Println("Generiere Bild für: ", imageName)
+	respBody, err := callDalleAPI(description)
+	if err != nil {
+		log.Fatalf("Fehler bei der Bildgenerierung: %v", err)
+	}
+
+	// Parsen der JSON-Antwort, um die URL des Bildes zu extrahieren
+	var jsonResponse struct {
+		Data []struct {
+			Url string `json:"url"` // Angenommen, die API gibt eine URL zurück
+		} `json:"data"`
+	}
+
+	err = json.Unmarshal(respBody, &jsonResponse)
+	if err != nil || len(jsonResponse.Data) == 0 {
+		log.Fatalf("Fehler beim Parsen der JSON-Antwort oder keine Bild-URL gefunden: %v", err)
+	}
+
+	imageUrl := jsonResponse.Data[0].Url
+
+	// Herunterladen des Bildes von der extrahierten URL
+	response, err := http.Get(imageUrl)
+	if err != nil {
+		log.Fatalf("Fehler beim Herunterladen des Bildes: %v", err)
+	}
+	defer response.Body.Close()
+
+	imageBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("Fehler beim Lesen des Bildinhalts: %v", err)
+	}
+
+	// Laden des Bildes aus den Bytes
+	img, _, err := image.Decode(bytes.NewReader(imageBytes))
+	if err != nil {
+		log.Fatalf("Fehler beim Dekodieren des Bildes: %v", err)
+	}
+
+	// Skalieren des Bildes auf 500x500 Pixel
+	newImg := resize.Resize(500, 500, img, resize.Lanczos3)
+
+	// Öffnen einer Datei zum Speichern des skalierten Bildes
+	//imageName = strings.ReplaceAll(imageName, "__", "_")          // Ersetzt doppelte Unterstriche durch einzelne
+	//imageName = strings.ToLower(imageName)
+	imageName = strings.ToLower(imageName)
+	imageName = strings.Replace(imageName, "__", "_", -1)         // Ersetzt alle "__" durch "_"
+	imagePath := fmt.Sprintf("./images/teaser/%s.png", imageName) // Verwendet den modifizierten imageName für den Pfad
+
+	file, err := os.Create(imagePath)
+	if err != nil {
+		log.Fatalf("Fehler beim Erstellen der Datei: %v", err)
+	}
+	defer file.Close()
+
+	// Speichern des skalierten Bildes als PNG
+	err = png.Encode(file, newImg)
+	if err != nil {
+		log.Fatalf("Fehler beim Speichern des skalierten Bildes: %v", err)
+	}
+}
+
+func formatImageName(name string) string {
+	// Ersetzt doppelte Unterstriche durch einzelne und wandelt in Kleinbuchstaben um
+	name = strings.ReplaceAll(name, "__", "_")
+	name = strings.ToLower(name)
+	return name
+}
+
+func InitiateImageGeneration(trackInfo *GPXTrackInfo) {
+	description := generateDescription(trackInfo)
+	imageName := sanitizeFileName(trackInfo.Name)
+	GenerateAndSaveImageFromDescription(description, imageName)
+}
+
+func GenerateAndSaveImageFromDescription(description, imageName string) {
+	log.Println("Starte Bildgenerierung mit Beschreibung: ", description)
+	// Hinzufügen der "Das Bild soll in Pixelart sein." Präambel zur Beschreibung
+	fullDescription := "Das Bild soll in fotorealistisch sein. " + description
+	generateAndSaveImage(fullDescription, imageName)
+}
+
+func copyDefaultImage(imageName string) {
+	// Kopieren Sie das Standardbild in den Zielordner mit dem neuen Bildnamen
+	imageName = strings.ToLower(imageName)
+	imageName = strings.Replace(imageName, "__", "_", -1) // Ersetzt alle "__" durch "_"
+	destinationPath := fmt.Sprintf("./images/teaser/%s.png", imageName)
+	err := copyFile(defaultImagePath, destinationPath)
+	if err != nil {
+		log.Fatalf("Fehler beim Kopieren des Standardbildes: %v", err)
+	}
+}
+
+func copyFile(src, dst string) error {
+	input, err := ioutil.ReadFile(src)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(dst, input, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string) error {
@@ -305,7 +461,7 @@ func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string) err
 
 	// Dateinamen für das Markdown-File generieren und Slug in Kleinbuchstaben umwandeln,
 	// danach alle doppelten Unterstriche durch einen einzelnen ersetzen
-	fileName := sanitizeFileName(trackInfo.Name) + ".md"
+	fileName := strings.ReplaceAll(strings.ToLower(sanitizeFileName(trackInfo.Name)), "__", "_") + ".md"
 	slug := strings.ReplaceAll(strings.ToLower(sanitizeFileName(trackInfo.Name)), "__", "_")
 	filePath := markdownDirPath + "/" + strings.ToLower(fileName)
 
@@ -357,7 +513,8 @@ elevation_start: %.2f
 elevation_end: %.2f
 difficulty: "%s"
 description: "%s"
-trackpoints:
+teaser_image: ./images/teaser/%s.png
+// trackpoints:
 `, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.State, trackInfo.ActivityType,
 		trackInfo.Length, trackInfo.Duration, trackInfo.MovingTime,
 		trackInfo.TotalAscent, trackInfo.TotalDescent,
@@ -365,13 +522,13 @@ trackpoints:
 		trackInfo.StartPoint.Latitude, trackInfo.StartPoint.Longitude,
 		trackInfo.EndPoint.Latitude, trackInfo.EndPoint.Longitude,
 		trackInfo.StartPoint.Elevation, trackInfo.EndPoint.Elevation,
-		lastSentence, restOfDescription) // Füge die generierte Beschreibung hier ein
+		lastSentence, restOfDescription, slug) // Füge die generierte Beschreibung hier ein
 
-	// Trackpoints hinzufügen
+	/* Trackpoints hinzufügen
 	for _, point := range trackInfo.Points {
 		markdownContent += fmt.Sprintf("  - Latitude: %.5f\n    Longitude: %.5f\n    Elevation: %.2f\n",
 			point.Latitude, point.Longitude, point.Elevation)
-	}
+	} */
 
 	// Markdown-File schreiben
 	return ioutil.WriteFile(filePath, []byte(markdownContent), 0644)
@@ -422,7 +579,7 @@ func SaveOrUpdateGPXTrackInfoInJSON(trackInfo *GPXTrackInfo, jsonFilePath string
 
 	// Zusätzlich ein separates JSON-File pro Track speichern
 	// Dateinamen generieren: Trackname mit Unterstrichen anstelle von Leerzeichen
-	fileName := sanitizeFileName(trackInfo.Name) + ".json"
+	fileName := strings.ReplaceAll(strings.ToLower(sanitizeFileName(trackInfo.Name)), "__", "_") + ".json"
 	filePath := "./data/activities/" + fileName
 
 	// Daten serialisieren für einzelnes Track-JSON

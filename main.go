@@ -92,6 +92,8 @@ func fileUploadHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		InitiateImageGeneration(trackInfo)
+
 		// Generieren der Beschreibung
 		description := generateDescription(trackInfo)
 
