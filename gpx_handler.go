@@ -26,20 +26,26 @@ var (
 
 // Strukturdefinitionen
 type GPXTrackInfo struct {
-	Name         string     `json:"name"`
-	Country      string     `json:"country"`       // Feld für das Land
-	State        string     `json:"state"`         // Feld für den Kanton/Bundesland
-	ActivityType string     `json:"activity_type"` // Neues Feld für den Typ der Aktivität
-	Length       float64    `json:"length_km"`     // Feld für die Streckenlänge in Kilometern
-	Duration     string     `json:"duration"`      // Neues Feld für die Dauer in Stunden und Minuten
-	MovingTime   string     `json:"moving_time"`   // Reine Bewegungszeit in Stunden und Minuten
-	TotalAscent  float64    `json:"total_ascent"`  // Gesamte aufsteigende Höhenmeter
-	TotalDescent float64    `json:"total_descent"` // Gesamte absteigende Höhenmeter
-	StartTime    time.Time  `json:"start_time"`
-	EndTime      time.Time  `json:"end_time"`
-	StartPoint   GPXPoint   `json:"start_point"`
-	EndPoint     GPXPoint   `json:"end_point"`
-	Points       []GPXPoint `json:"points"`
+	Name           string     `json:"name"`
+	Country        string     `json:"country"`      // Feld für das Land
+	CountryCode    string     `json:"country_code"` // Feld für das Land
+	State          string     `json:"state"`        // Feld für den Kanton/Bundesland
+	Village        string     `json:"village"`
+	EndCountry     string     `json:"endcountry"`      // Feld für das Land
+	EndCountryCode string     `json:"endcountry_code"` // Feld für das Land
+	EndState       string     `json:"endstate"`        // Feld für den Kanton/Bundesland
+	EndVillage     string     `json:"endvillage"`
+	ActivityType   string     `json:"activity_type"` // Neues Feld für den Typ der Aktivität
+	Length         float64    `json:"length_km"`     // Feld für die Streckenlänge in Kilometern
+	Duration       string     `json:"duration"`      // Neues Feld für die Dauer in Stunden und Minuten
+	MovingTime     string     `json:"moving_time"`   // Reine Bewegungszeit in Stunden und Minuten
+	TotalAscent    float64    `json:"total_ascent"`  // Gesamte aufsteigende Höhenmeter
+	TotalDescent   float64    `json:"total_descent"` // Gesamte absteigende Höhenmeter
+	StartTime      time.Time  `json:"start_time"`
+	EndTime        time.Time  `json:"end_time"`
+	StartPoint     GPXPoint   `json:"start_point"`
+	EndPoint       GPXPoint   `json:"end_point"`
+	Points         []GPXPoint `json:"points"`
 }
 
 type GPXPoint struct {
@@ -87,13 +93,27 @@ func ExtractGPXTrackInfo(filePath string) (*GPXTrackInfo, error) {
 	}
 
 	// Innerhalb von ExtractGPXTrackInfo, nachdem StartPoint gesetzt wurde:
-	country, state, err := GetCountryAndStateFromCoordinates(trackInfo.StartPoint.Latitude, trackInfo.StartPoint.Longitude)
+	country, state, village, country_code, err := GetCountryAndStateFromCoordinates(trackInfo.StartPoint.Latitude, trackInfo.StartPoint.Longitude)
 	if err != nil {
 		fmt.Println("Fehler beim Abrufen von Land und Kanton/Bundesland:", err)
 		// Entscheiden Sie, wie Sie mit dem Fehler umgehen möchten (z.B. Fehler zurückgeben oder ignorieren)
 	} else {
 		trackInfo.Country = country
 		trackInfo.State = state
+		trackInfo.Village = village
+		trackInfo.CountryCode = country_code
+	}
+
+	// Informationen für den Endpunkt abrufen
+	endCountry, endState, endVillage, endCountryCode, err := GetCountryAndStateFromCoordinates(trackInfo.EndPoint.Latitude, trackInfo.EndPoint.Longitude)
+	if err != nil {
+		fmt.Println("Fehler beim Abrufen von Informationen für den Endpunkt:", err)
+		// Entscheiden Sie, wie Sie mit dem Fehler umgehen möchten
+	} else {
+		trackInfo.EndCountry = endCountry
+		trackInfo.EndState = endState
+		trackInfo.EndVillage = endVillage
+		trackInfo.EndCountryCode = endCountryCode
 	}
 
 	var points []GPXPoint
@@ -127,7 +147,7 @@ func ExtractGPXTrackInfo(filePath string) (*GPXTrackInfo, error) {
 	totalMinutes := int(duration.Minutes())
 	hours := totalMinutes / 60
 	minutes := totalMinutes % 60
-	trackInfo.Duration = fmt.Sprintf("%dh %dm", hours, minutes)
+	trackInfo.Duration = fmt.Sprintf("%dh %dmin", hours, minutes)
 
 	lengthInKm := totalLength / 1000
 	trackInfo.Points = points
@@ -169,17 +189,20 @@ func ExtractGPXTrackInfo(filePath string) (*GPXTrackInfo, error) {
 	movingMinutes := totalMovingMinutes % 60
 
 	// Setzen der berechneten reinen Bewegungszeit in trackInfo
-	trackInfo.MovingTime = fmt.Sprintf("%dh %dm", movingHours, movingMinutes)
+	trackInfo.MovingTime = fmt.Sprintf("%dh %dmin", movingHours, movingMinutes)
 
 	return &trackInfo, nil
 }
 
 // Funktion zum Abrufen der Landes- und Kanton-/Bundeslandinformationen
-func GetCountryAndStateFromCoordinates(latitude, longitude float64) (string, string, error) {
+func GetCountryAndStateFromCoordinates(latitude, longitude float64) (string, string, string, string, error) {
 	var apiResponse struct {
 		Address struct {
-			Country string `json:"country"`
-			State   string `json:"state"`
+			Country     string `json:"country"`
+			State       string `json:"state"`
+			Village     string `json:"village"`
+			Town        string `json:"town"`
+			CountryCode string `json:"country_code"`
 		} `json:"address"`
 	}
 
@@ -187,24 +210,39 @@ func GetCountryAndStateFromCoordinates(latitude, longitude float64) (string, str
 
 	resp, err := http.Get(requestURL)
 	if err != nil {
-		return "", "", err
+		return "", "", "", "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", "", err
+		return "", "", "", "", err
 	}
 
 	if err := json.Unmarshal(body, &apiResponse); err != nil {
-		return "", "", err
+		return "", "", "", "", err
 	}
 
-	return apiResponse.Address.Country, apiResponse.Address.State, nil
+	// Wenn Village leer ist, aber Town einen Wert hat, nutze den Wert von Town für Village.
+	if apiResponse.Address.Village == "" && apiResponse.Address.Town != "" {
+		apiResponse.Address.Village = apiResponse.Address.Town
+	}
+
+	// Bearbeite das Land, um nur den ersten Namen vor dem Slash zu verwenden
+	countries := strings.Split(apiResponse.Address.Country, "/")
+	if len(countries) > 0 {
+		apiResponse.Address.Country = countries[0] // Nur den ersten Namen verwenden
+	}
+
+	// Optional: Ausgabe von Village im Terminal
+	fmt.Println("Village:", apiResponse.Address.Village)
+	fmt.Println("Land:", apiResponse.Address.Country)
+
+	return apiResponse.Address.Country, apiResponse.Address.State, apiResponse.Address.Village, apiResponse.Address.CountryCode, nil
 }
 
 // Hilfsfunktion, um Umlaute zu ersetzen und unerwünschte Zeichen zu entfernen
-func sanitizeFileName(input string) string {
+func SanitizeFileName(input string) string {
 	// Bindestriche komplett entfernen
 	input = strings.ReplaceAll(input, "-", "")
 
@@ -228,7 +266,16 @@ func sanitizeFileName(input string) string {
 			sb.WriteRune('_')
 		}
 	}
-	return sb.String()
+	result := sb.String()
+
+	result = strings.ToLower(sb.String())
+
+	// Ersetzen doppelter Unterstriche durch einfache
+	for strings.Contains(result, "__") {
+		result = strings.ReplaceAll(result, "__", "_")
+	}
+
+	return result
 
 }
 
@@ -238,9 +285,15 @@ func generateDescription(trackInfo *GPXTrackInfo) string {
 		log.Println("ChatGPT API ist deaktiviert. Verwende Mock-Beschreibung.")
 		return "Dies ist eine Mock-Beschreibung für Testzwecke."
 	}
-	apiKey := "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"
-	prompt := fmt.Sprintf("Schreibe eine kurze Beschreibung, maximum 100 Wörter, für eine %s-Aktivität mit dem Titel '%s', die in %s, %s startet. Die Strecke ist %.2f km lang, mit einer Gesamtdauer von %s inklusive Pausen. Die Route hat einen Gesamtaufstieg von %.0f Metern und einen Gesamtabstieg von %.0f Metern. Basierend auf diesen Informationen, bewerte die Route mit nur einem Wort am Ende der Beschreibung: leicht, mittel oder schwer.",
-		trackInfo.ActivityType, trackInfo.Name, trackInfo.State, trackInfo.Country, trackInfo.Length, trackInfo.Duration, trackInfo.TotalAscent, trackInfo.TotalDescent)
+
+	apiKey := os.Getenv("CHATGPT_API_KEY") // Verwenden Sie den Namen der Umgebungsvariablen
+
+	if apiKey == "" {
+		log.Fatal("CHATGPT_API_KEY ist nicht gesetzt.")
+	}
+
+	prompt := fmt.Sprintf("Verwende keine Anführungszeichen oder Hochkommas im Beschreibungstext. Schreibe eine kurze Beschreibung, maximum 100 Wörter, für eine %s-Aktivität mit dem Titel '%s', die in %s, %s startet. Die Strecke ist %.2f km lang, mit einer Gesamtdauer von %s inklusive Pausen. Die Route hat einen Gesamtaufstieg von %.0f Metern und einen Gesamtabstieg von %.0f Metern. Basierend auf diesen Informationen, bewerte die Route mit nur einem Wort am Ende der Beschreibung: leicht, mittel oder schwer.",
+		trackInfo.ActivityType, trackInfo.Name, trackInfo.Village, trackInfo.Country, trackInfo.Length, trackInfo.Duration, trackInfo.TotalAscent, trackInfo.TotalDescent)
 
 	data := map[string]interface{}{
 		"model": "gpt-3.5-turbo",
@@ -297,7 +350,7 @@ func generateDescription(trackInfo *GPXTrackInfo) string {
 }
 
 func callDalleAPI(prompt string) ([]byte, error) {
-	apiKey := "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" // Ihr tatsächlicher API-Schlüssel
+	apiKey := os.Getenv("CHATGPT_API_KEY_IMAGE") // Verwenden Sie den Namen der Umgebungsvariablen
 	apiURL := "https://api.openai.com/v1/images/generations"
 
 	// Konfigurieren des Anfrage-Bodys
@@ -415,7 +468,7 @@ func formatImageName(name string) string {
 
 func InitiateImageGeneration(trackInfo *GPXTrackInfo) {
 	description := generateDescription(trackInfo)
-	imageName := sanitizeFileName(trackInfo.Name)
+	imageName := SanitizeFileName(trackInfo.Name)
 	GenerateAndSaveImageFromDescription(description, imageName)
 }
 
@@ -451,7 +504,7 @@ func copyFile(src, dst string) error {
 	return nil
 }
 
-func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string) error {
+func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string, coatOfArmsURL string, endcoatOfArmsURL string) error {
 	markdownDirPath := "./data/md" // Pfad festlegen, wo die MD-Dateien gespeichert werden sollen
 
 	// Sicherstellen, dass der Pfad existiert
@@ -461,8 +514,8 @@ func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string) err
 
 	// Dateinamen für das Markdown-File generieren und Slug in Kleinbuchstaben umwandeln,
 	// danach alle doppelten Unterstriche durch einen einzelnen ersetzen
-	fileName := strings.ReplaceAll(strings.ToLower(sanitizeFileName(trackInfo.Name)), "__", "_") + ".md"
-	slug := strings.ReplaceAll(strings.ToLower(sanitizeFileName(trackInfo.Name)), "__", "_")
+	fileName := strings.ReplaceAll(strings.ToLower(SanitizeFileName(trackInfo.Name)), "__", "_") + ".md"
+	slug := strings.ReplaceAll(strings.ToLower(SanitizeFileName(trackInfo.Name)), "__", "_")
 	filePath := markdownDirPath + "/" + strings.ToLower(fileName)
 
 	// Teile die Beschreibung in Sätze auf
@@ -496,7 +549,13 @@ draft: false
 type: activities
 date: "%s"
 country: "%s"
+country_code: "%s"
 state: "%s"
+village: "%s"
+endcountry: "%s"
+endcountry_code: "%s"
+endstate: "%s"
+endvillage: "%s"
 activity_type: "%s"
 length_km: %.2f
 duration: "%s"
@@ -513,16 +572,18 @@ elevation_start: %.2f
 elevation_end: %.2f
 difficulty: "%s"
 description: "%s"
-teaser_image: ./images/teaser/%s.png
-// trackpoints:
----`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.State, trackInfo.ActivityType,
+coat_of_arms_url: "%s"
+endcoat_of_arms_url: "%s"
+teaser_image: /images/teaser/%s.png
+gpx_download: /gpx/%s.gpx
+---`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.CountryCode, trackInfo.State, trackInfo.Village, trackInfo.EndCountry, trackInfo.EndCountryCode, trackInfo.EndState, trackInfo.EndVillage, trackInfo.ActivityType,
 		trackInfo.Length, trackInfo.Duration, trackInfo.MovingTime,
 		trackInfo.TotalAscent, trackInfo.TotalDescent,
 		trackInfo.StartTime.Format(time.RFC3339), trackInfo.EndTime.Format(time.RFC3339),
 		trackInfo.StartPoint.Latitude, trackInfo.StartPoint.Longitude,
 		trackInfo.EndPoint.Latitude, trackInfo.EndPoint.Longitude,
 		trackInfo.StartPoint.Elevation, trackInfo.EndPoint.Elevation,
-		lastSentence, restOfDescription, slug) // Füge die generierte Beschreibung hier ein
+		lastSentence, restOfDescription, coatOfArmsURL, endcoatOfArmsURL, slug, slug) // Füge die generierte Beschreibung hier ein
 
 	/* Trackpoints hinzufügen
 	for _, point := range trackInfo.Points {
@@ -579,7 +640,7 @@ func SaveOrUpdateGPXTrackInfoInJSON(trackInfo *GPXTrackInfo, jsonFilePath string
 
 	// Zusätzlich ein separates JSON-File pro Track speichern
 	// Dateinamen generieren: Trackname mit Unterstrichen anstelle von Leerzeichen
-	fileName := strings.ReplaceAll(strings.ToLower(sanitizeFileName(trackInfo.Name)), "__", "_") + ".json"
+	fileName := strings.ReplaceAll(strings.ToLower(SanitizeFileName(trackInfo.Name)), "__", "_") + ".json"
 	filePath := "./data/activities/" + fileName
 
 	// Daten serialisieren für einzelnes Track-JSON
