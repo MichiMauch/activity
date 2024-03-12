@@ -31,5 +31,5 @@ description: "Die ViaGottardo-Wanderung von Zofingen nach Sursee erstreckt sich 
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Zofingen.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Sursee.svg"
 teaser_image: ./images/teaser/viagottardo_zofingen_sursee.png
-gpx_download: ./gpx/viagottardo_zofingen_sursee.gpx
+gpx_download: /gpx/viagottardo_zofingen_sursee.gpx
 ---

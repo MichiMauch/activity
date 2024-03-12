@@ -31,5 +31,5 @@ description: "Erleben Sie die atemberaubende ViaGottardo-Wanderung von Sursee na
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Sursee.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Luzern%20COA.svg"
 teaser_image: ./images/teaser/viagottardo_sursee_luzern.png
-gpx_download: ./gpx/viagottardo_sursee_luzern.gpx
+gpx_download: /gpx/viagottardo_sursee_luzern.gpx
 ---

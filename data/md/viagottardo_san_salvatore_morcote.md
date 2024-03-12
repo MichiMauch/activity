@@ -31,5 +31,5 @@ description: "Erkunde die ViaGottardo von San Salvatore nach Morcote in Breganzo
 coat_of_arms_url: ""
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Morcote-coat%20of%20arms.svg"
 teaser_image: ./images/teaser/viagottardo_san_salvatore_morcote.png
-gpx_download: ./gpx/viagottardo_san_salvatore_morcote.gpx
+gpx_download: /gpx/viagottardo_san_salvatore_morcote.gpx
 ---

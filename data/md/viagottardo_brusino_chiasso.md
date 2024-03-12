@@ -31,5 +31,5 @@ description: "Erkunde die ViaGottardo-Route von Brusino nach Chiasso in der Schw
 coat_of_arms_url: ""
 endcoat_of_arms_url: ""
 teaser_image: ./images/teaser/viagottardo_brusino_chiasso.png
-gpx_download: ./gpx/viagottardo_brusino_chiasso.gpx
+gpx_download: /gpx/viagottardo_brusino_chiasso.gpx
 ---

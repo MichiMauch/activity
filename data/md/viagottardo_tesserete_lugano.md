@@ -31,5 +31,5 @@ description: "Entdecke die historische ViaGottardo zwischen Tesserete und Lugano
 coat_of_arms_url: ""
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Lugano%20COA.svg"
 teaser_image: ./images/teaser/viagottardo_tesserete_lugano.png
-gpx_download: ./gpx/viagottardo_tesserete_lugano.gpx
+gpx_download: /gpx/viagottardo_tesserete_lugano.gpx
 ---

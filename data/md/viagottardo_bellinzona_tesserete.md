@@ -30,6 +30,6 @@ difficulty: "Mit einem Gesamtaufstieg von 1346 Metern und einem Gesamtabstieg vo
 description: "Die ViaGottardo: Bellinzona - Tesserete führt durch malerische Landschaften und bietet atemberaubende Ausblicke. Die 25.67 km lange Strecke verläuft von Carasso, Schweiz und dauert insgesamt 6h 22min, inklusive Pausen"
 coat_of_arms_url: ""
 endcoat_of_arms_url: ""
-teaser_image: /images/teaser/viagottardo_bellinzona_tesserete.png
+teaser_image: ./images/teaser/viagottardo_bellinzona_tesserete.png
 gpx_download: /gpx/viagottardo_bellinzona_tesserete.gpx
 ---

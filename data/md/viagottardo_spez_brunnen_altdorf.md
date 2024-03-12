@@ -31,5 +31,5 @@ description: "Erkunde die beeindruckende ViaGottardo Spez: Brunnen - Altdorf Rou
 coat_of_arms_url: ""
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Altdorf-coat%20of%20arms.svg"
 teaser_image: ./images/teaser/viagottardo_spez_brunnen_altdorf.png
-gpx_download: ./gpx/viagottardo_spez_brunnen_altdorf.gpx
+gpx_download: /gpx/viagottardo_spez_brunnen_altdorf.gpx
 ---

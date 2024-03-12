@@ -31,5 +31,5 @@ description: "Erkunde die ViaGottardo zwischen Basel und Liestal. Die 21,31 km l
 coat_of_arms_url: ""
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Liestal.svg"
 teaser_image: ./images/teaser/viagottardo_basel_liestal.png
-gpx_download: ./gpx/viagottardo_basel_liestal.gpx
+gpx_download: /gpx/viagottardo_basel_liestal.gpx
 ---

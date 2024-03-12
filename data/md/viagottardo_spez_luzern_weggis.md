@@ -31,5 +31,5 @@ description: "Die ViaGottardo Spez: Luzern - Weggis ist eine malerische Wanderst
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Luzern%20COA.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Weggis%20COA.svg"
 teaser_image: ./images/teaser/viagottardo_spez_luzern_weggis.png
-gpx_download: ./gpx/viagottardo_spez_luzern_weggis.gpx
+gpx_download: /gpx/viagottardo_spez_luzern_weggis.gpx
 ---

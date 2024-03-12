@@ -574,7 +574,7 @@ difficulty: "%s"
 description: "%s"
 coat_of_arms_url: "%s"
 endcoat_of_arms_url: "%s"
-teaser_image: /images/teaser/%s.png
+teaser_image: ./images/teaser/%s.png
 gpx_download: /gpx/%s.gpx
 ---`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.CountryCode, trackInfo.State, trackInfo.Village, trackInfo.EndCountry, trackInfo.EndCountryCode, trackInfo.EndState, trackInfo.EndVillage, trackInfo.ActivityType,
 		trackInfo.Length, trackInfo.Duration, trackInfo.MovingTime,

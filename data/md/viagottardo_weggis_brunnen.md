@@ -31,5 +31,5 @@ description: "Erkunde die ViaGottardo-Route von Weggis nach Brunnen in der Schwe
 coat_of_arms_url: ""
 endcoat_of_arms_url: ""
 teaser_image: ./images/teaser/viagottardo_weggis_brunnen.png
-gpx_download: ./gpx/viagottardo_weggis_brunnen.gpx
+gpx_download: /gpx/viagottardo_weggis_brunnen.gpx
 ---
