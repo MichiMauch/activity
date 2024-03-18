@@ -4,6 +4,7 @@ title: "ViaGottardo Spez: Luzern - Weggis"
 draft: false
 type: activities
 date: "2022-04-29T08:32:44+02:00"
+tags: ["ViaGottardo"]
 country: "Schweiz"
 country_code: "ch"
 state: "Luzern"

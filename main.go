@@ -20,6 +20,7 @@ const uploadFormTmpl = `
 <body>
     <form enctype="multipart/form-data" action="/uploads/gpx" method="post">
         <input type="file" name="gpxfile" />
+		<input type="text" name="tag" placeholder="Tag eingeben" /> <!-- Neues Textfeld hinzugefügt -->
         <input type="submit" value="Hochladen" />
     </form>
 	<form action="/settings" method="post">
@@ -83,6 +84,9 @@ func fileUploadHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Zugriff auf den Wert des Textfeldes 'tag'
+		tag := r.FormValue("tag") // Hier extrahieren wir den Wert
+
 		// Zugriff auf die hochgeladene Datei
 		file, header, err := r.FormFile("gpxfile")
 		if err != nil {
@@ -117,12 +121,16 @@ func fileUploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Ausgabe des ersten Track-Namens, Start- und Endkoordinaten
 		fmt.Fprintf(w, "Track-Name: %s\n", trackInfo.Name)
+		fmt.Fprintf(w, "Up: %v\n", trackInfo.TotalAscent)
+		fmt.Fprintf(w, "Down: %v\n", trackInfo.TotalDescent)
+
 		fmt.Fprintf(w, "Start: %v, %v\n", trackInfo.StartPoint.Latitude, trackInfo.StartPoint.Longitude)
 		fmt.Fprintf(w, "End: %v, %v\n", trackInfo.EndPoint.Latitude, trackInfo.EndPoint.Longitude)
 
 		// Ausgabe der Anfangs- und Endzeit
 		fmt.Fprintf(w, "Anfangszeit: %v\n", trackInfo.StartTime)
 		fmt.Fprintf(w, "Endzeit: %v\n", trackInfo.EndTime)
+		fmt.Fprintf(w, "Tag: %s\n", tag) // Ausgabe des Tags als Teil der Antwort
 
 		// Speichern oder Aktualisieren der Track-Informationen in einem aggregierten JSON-File
 		jsonOutputPath := "./data/gpx_uploads.json" // Fester Dateipfad für alle Uploads
@@ -168,7 +176,7 @@ func fileUploadHandler(w http.ResponseWriter, r *http.Request) {
 		description := generateDescription(trackInfo)
 
 		// Speichern der GPX-Track-Informationen als Markdown
-		if err := SaveGPXTrackInfoAsMarkdown(trackInfo, description, coatOfArmsURL, endcoatOfArmsURL); err != nil {
+		if err := SaveGPXTrackInfoAsMarkdown(trackInfo, description, coatOfArmsURL, endcoatOfArmsURL, tag); err != nil {
 			log.Printf("Fehler beim Speichern der Markdown-Datei: %v", err)
 			http.Error(w, "Fehler beim Speichern der Markdown-Datei", http.StatusInternalServerError)
 			return

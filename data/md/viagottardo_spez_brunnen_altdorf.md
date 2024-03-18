@@ -4,6 +4,7 @@ title: "ViaGottardo Spez: Brunnen - Altdorf"
 draft: false
 type: activities
 date: "2024-02-02T08:59:52+01:00"
+tags: ["ViaGottardo"]
 country: "Schweiz"
 country_code: "ch"
 state: "Schwyz"

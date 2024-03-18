@@ -4,6 +4,7 @@ title: "ViaGottardo: Bellinzona - Tesserete"
 draft: false
 type: activities
 date: "2022-01-07T08:31:52+01:00"
+tags: ["ViaGottardo"]
 country: "Schweiz"
 country_code: "ch"
 state: "Ticino"

@@ -4,6 +4,7 @@ title: "ViaGottardo: Läufelfingen - Zofingen "
 draft: false
 type: activities
 date: "2021-09-10T08:48:03+02:00"
+tags: ["ViaGottardo"]
 country: "Schweiz"
 country_code: "ch"
 state: "Basel-Landschaft"

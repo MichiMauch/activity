@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strings"
@@ -27,6 +28,7 @@ var (
 // Strukturdefinitionen
 type GPXTrackInfo struct {
 	Name           string     `json:"name"`
+	Tag            string     `json:"tag"`
 	Country        string     `json:"country"`      // Feld für das Land
 	CountryCode    string     `json:"country_code"` // Feld für das Land
 	State          string     `json:"state"`        // Feld für den Kanton/Bundesland
@@ -117,28 +119,49 @@ func ExtractGPXTrackInfo(filePath string) (*GPXTrackInfo, error) {
 	}
 
 	var points []GPXPoint
-	var totalLength, totalAscent, totalDescent float64
-	var previousElevation float64 = startPoint.Elevation.Value() // Initialisieren mit der Höhe des ersten Punktes
+	var totalLength, totalAscent, totalDescent, previousElevation, elevationSum float64
+	var elevationCount int
+	const startCalculationIndex = 2      // Beginne die Berechnung ab dem dritten Trackpoint
+	const elevationChangeThreshold = 0.4 // Mindeständerung in Metern für die Berücksichtigung
+	const smoothFactor = 5               // Anzahl der Punkte, die für den gleitenden Durchschnitt verwendet werden
+
+	previousElevation = 0.0
+	if len(track.Segments) > 0 && len(track.Segments[0].Points) > startCalculationIndex {
+		previousElevation = track.Segments[0].Points[startCalculationIndex].Elevation.Value()
+	}
 
 	for _, segment := range track.Segments {
 		totalLength += segment.Length2D()
 		for i, pt := range segment.Points {
-			if i > 0 { // Ab dem zweiten Punkt
-				elevationDiff := pt.Elevation.Value() - previousElevation
-				if elevationDiff > 0 {
-					totalAscent += elevationDiff
-				} else {
-					totalDescent -= elevationDiff
+			if i >= startCalculationIndex {
+				// Glättung: Berechne den gleitenden Durchschnitt der Elevation
+				elevationSum += pt.Elevation.Value()
+				elevationCount++
+				if elevationCount == smoothFactor { // Berechne den Durchschnitt alle `smoothFactor` Punkte
+					currentElevation := elevationSum / float64(elevationCount)
+					elevationDiff := currentElevation - previousElevation
+
+					if math.Abs(elevationDiff) >= elevationChangeThreshold {
+						if elevationDiff > 0 {
+							totalAscent += elevationDiff
+						} else {
+							totalDescent -= elevationDiff
+						}
+					}
+
+					// Reset für den nächsten Durchschnitt
+					elevationSum = 0
+					elevationCount = 0
+					previousElevation = currentElevation // Aktualisiere für den nächsten Punkt
 				}
 			}
-			if i%50 == 0 {
+			if i%50 == 0 && i >= startCalculationIndex { // Füge jeden 50. Punkt ab dem dritten hinzu
 				points = append(points, GPXPoint{
 					Latitude:  pt.Latitude,
 					Longitude: pt.Longitude,
 					Elevation: pt.Elevation.Value(),
 				})
 			}
-			previousElevation = pt.Elevation.Value() // Aktualisieren der Höhe für den nächsten Punkt
 		}
 	}
 
@@ -504,7 +527,7 @@ func copyFile(src, dst string) error {
 	return nil
 }
 
-func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string, coatOfArmsURL string, endcoatOfArmsURL string) error {
+func SaveGPXTrackInfoAsMarkdown(trackInfo *GPXTrackInfo, description string, coatOfArmsURL string, endcoatOfArmsURL string, tag string) error {
 	markdownDirPath := "./data/md" // Pfad festlegen, wo die MD-Dateien gespeichert werden sollen
 
 	// Sicherstellen, dass der Pfad existiert
@@ -548,6 +571,7 @@ title: "%s"
 draft: false
 type: activities
 date: "%s"
+tags: ["%s"]
 country: "%s"
 country_code: "%s"
 state: "%s"
@@ -576,7 +600,9 @@ coat_of_arms_url: "%s"
 endcoat_of_arms_url: "%s"
 teaser_image: ./images/teaser/%s.png
 gpx_download: /gpx/%s.gpx
----`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), trackInfo.Country, trackInfo.CountryCode, trackInfo.State, trackInfo.Village, trackInfo.EndCountry, trackInfo.EndCountryCode, trackInfo.EndState, trackInfo.EndVillage, trackInfo.ActivityType,
+---
+trackpoints: 
+`, slug, trackInfo.Name, trackInfo.StartTime.Format(time.RFC3339), tag, trackInfo.Country, trackInfo.CountryCode, trackInfo.State, trackInfo.Village, trackInfo.EndCountry, trackInfo.EndCountryCode, trackInfo.EndState, trackInfo.EndVillage, trackInfo.ActivityType,
 		trackInfo.Length, trackInfo.Duration, trackInfo.MovingTime,
 		trackInfo.TotalAscent, trackInfo.TotalDescent,
 		trackInfo.StartTime.Format(time.RFC3339), trackInfo.EndTime.Format(time.RFC3339),
@@ -585,11 +611,11 @@ gpx_download: /gpx/%s.gpx
 		trackInfo.StartPoint.Elevation, trackInfo.EndPoint.Elevation,
 		lastSentence, restOfDescription, coatOfArmsURL, endcoatOfArmsURL, slug, slug) // Füge die generierte Beschreibung hier ein
 
-	/* Trackpoints hinzufügen
+	// Trackpoints hinzufügen
 	for _, point := range trackInfo.Points {
 		markdownContent += fmt.Sprintf("  - Latitude: %.5f\n    Longitude: %.5f\n    Elevation: %.2f\n",
 			point.Latitude, point.Longitude, point.Elevation)
-	} */
+	}
 
 	// Markdown-File schreiben
 	return ioutil.WriteFile(filePath, []byte(markdownContent), 0644)

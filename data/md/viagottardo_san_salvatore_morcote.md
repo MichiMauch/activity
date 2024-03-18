@@ -4,6 +4,7 @@ title: "ViaGottardo: San Salvatore - Morcote"
 draft: false
 type: activities
 date: "2021-09-25T09:34:04+02:00"
+tags: ["ViaGottardo"]
 country: "Schweiz"
 country_code: "ch"
 state: "Ticino"
