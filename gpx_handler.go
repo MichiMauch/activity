@@ -598,7 +598,7 @@ difficulty: "%s"
 description: "%s"
 coat_of_arms_url: "%s"
 endcoat_of_arms_url: "%s"
-teaser_image: ./images/teaser/%s.png
+teaser_image: ./images/teaser/%s.webp
 gpx_download: /gpx/%s.gpx
 ---
 trackpoints: 

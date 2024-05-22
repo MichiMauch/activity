@@ -31,6 +31,6 @@ difficulty: "Bewertung: mittel."
 description: "Die ViaGottardo-Wanderung von Zofingen nach Sursee erstreckt sich über 27.16 km und dauert insgesamt 5 Stunden und 2 Minuten, inklusive Pausen. Die Strecke bietet einen Gesamtaufstieg von 582 Metern und einen Gesamtabstieg von 518 Metern"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Zofingen.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Sursee.svg"
-teaser_image: ./images/teaser/viagottardo_zofingen_sursee.png
+teaser_image: ./images/teaser/viagottardo_zofingen_sursee.webp
 gpx_download: /gpx/viagottardo_zofingen_sursee.gpx
 ---

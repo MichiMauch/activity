@@ -31,6 +31,6 @@ difficulty: "Bewertung: mittel."
 description: "Erkunde die ViaGottardo-Route von Brusino nach Chiasso in der Schweiz. Die 21.42 km lange Strecke führt dich durch malerische Landschaften und bietet einen Gesamtaufstieg von 880 Metern und einen Gesamtabstieg von 910 Metern. Die Wanderung dauert insgesamt 5 Stunden und 18 Minuten, inklusive Pausen"
 coat_of_arms_url: ""
 endcoat_of_arms_url: ""
-teaser_image: ./images/teaser/viagottardo_brusino_chiasso.png
+teaser_image: ./images/teaser/viagottardo_brusino_chiasso.webp
 gpx_download: /gpx/viagottardo_brusino_chiasso.gpx
 ---

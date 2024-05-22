@@ -31,6 +31,6 @@ difficulty: "Bewertung: mittel."
 description: "Entdecke die historische ViaGottardo zwischen Tesserete und Lugano in der Schweiz. Folge den malerischen Wegen über grüne Hügel und durch idyllische Dörfer. Genieße atemberaubende Ausblicke und entdecke die Schönheit der Natur. Mit moderatem Auf- und Abstieg bietet diese Wanderung ein ausgewogenes Erlebnis für Natur- und Kulturliebhaber"
 coat_of_arms_url: ""
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Lugano%20COA.svg"
-teaser_image: ./images/teaser/viagottardo_tesserete_lugano.png
+teaser_image: ./images/teaser/viagottardo_tesserete_lugano.webp
 gpx_download: /gpx/viagottardo_tesserete_lugano.gpx
 ---

@@ -30,6 +30,6 @@ difficulty: "Geniesse: mittel."
 description: "Erlebe eine atemberaubende Wanderung von Muhen zum Distelberg, über Aarau, entlang des Planetenwegs und nach Kölliken. Diese 18,53 km lange Route bietet abwechslungsreiche Landschaften mit einem Gesamtaufstieg von 227 Metern und einem Gesamtabstieg von 213 Metern"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Muhen%20AG.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Muhen%20AG.svg"
-teaser_image: ./images/teaser/distelberg_aarau_planetenweg_koelliken.png
+teaser_image: ./images/teaser/distelberg_aarau_planetenweg_koelliken.webp
 gpx_download: /gpx/distelberg_aarau_planetenweg_koelliken.gpx
 ---

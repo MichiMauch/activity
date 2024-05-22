@@ -31,6 +31,6 @@ difficulty: "Bewertung: Mittel."
 description: "Erkunde die ViaGottardo-Route von Weggis nach Brunnen in der Schweiz. Genieße eine 19,90 km lange Wanderung mit insgesamt 202 Metern Aufstieg und 185 Metern Abstieg in einer Gesamtdauer von 3 Stunden und 25 Minuten, einschließlich Pausen"
 coat_of_arms_url: ""
 endcoat_of_arms_url: ""
-teaser_image: ./images/teaser/viagottardo_weggis_brunnen.png
+teaser_image: ./images/teaser/viagottardo_weggis_brunnen.webp
 gpx_download: /gpx/viagottardo_weggis_brunnen.gpx
 ---

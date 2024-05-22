@@ -31,7 +31,7 @@ difficulty: "Bewertung: mittel."
 description: "Erkunde die malerische Wanderstrecke von Göschenen zum Gotthardpass. Die 18,61 km lange Route bietet atemberaubende Ausblicke und führt über 1032 Meter Aufstieg und 181 Meter Abstieg. Genieße die Schönheit der schweizerischen Landschaft während dieser 4-stündigen Wanderung"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/G%C3%B6schenen-coat%20of%20arms.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Airolo-coat%20of%20arms.svg"
-teaser_image: ./images/teaser/goeschenen_gotthardpass.png
+teaser_image: ./images/teaser/goeschenen_gotthardpass.webp
 gpx_download: /gpx/goeschenen_gotthardpass.gpx
 ---
 trackpoints: 

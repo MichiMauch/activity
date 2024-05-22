@@ -30,6 +30,6 @@ difficulty: "Bewertung: mittel."
 description: "Die Wanderung Baden - Lägeren Grat - Baden in Baden, Schweiz, erstreckt sich über 16.92 km mit einem Gesamtaufstieg von 1374 m und Gesamtabstieg von 743 m. Die Route dauert insgesamt 5h 45min inklusive Pausen"
 coat_of_arms_url: ""
 endcoat_of_arms_url: ""
-teaser_image: ./images/teaser/baden_laegeren_grat_baden.png
+teaser_image: ./images/teaser/baden_laegeren_grat_baden.webp
 gpx_download: /gpx/baden_laegeren_grat_baden.gpx
 ---

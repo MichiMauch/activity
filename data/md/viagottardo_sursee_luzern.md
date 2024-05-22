@@ -31,6 +31,6 @@ difficulty: "Bewertung: Mittel."
 description: "Erleben Sie die atemberaubende ViaGottardo-Wanderung von Sursee nach Luzern. Die 30,90 km lange Strecke bietet eine angenehme Wanderzeit von 5 Stunden und 27 Minuten, inklusive Pausen. Mit einem Gesamtaufstieg von 287 Metern und einem Gesamtabstieg von 352 Metern können Sie die Schönheit der Schweizer Landschaft entdecken"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Sursee.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Luzern%20COA.svg"
-teaser_image: ./images/teaser/viagottardo_sursee_luzern.png
+teaser_image: ./images/teaser/viagottardo_sursee_luzern.webp
 gpx_download: /gpx/viagottardo_sursee_luzern.gpx
 ---

@@ -30,7 +30,7 @@ elevation_end: 0.00
 difficulty: "Bewertung: mittel."
 description: "Die ViaGottardo: Liestal - Läufelfingen ist eine Wanderung von Liestal nach Läufelfingen in der malerischen Schweiz. Genieße die beeindruckende Landschaft mit einem Gesamtaufstieg von 690 Metern und einem Gesamtabstieg von 461 Metern. Die Route bietet eine abwechslungsreiche Strecke und eignet sich für Wanderer mit unterschiedlichem Niveau"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Liestal.svg"
-endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Laeufelfingen.png"
-teaser_image: ./images/teaser/viagottardo_liestal_laeufelfingen.png
+endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Laeufelfingen.webp"
+teaser_image: ./images/teaser/viagottardo_liestal_laeufelfingen.webp
 gpx_download: /gpx/viagottardo_liestal_laeufelfingen.gpx
 ---

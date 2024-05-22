@@ -30,6 +30,6 @@ difficulty: "Bewertung: mittel."
 description: "Erkunde die Fahrradroute von Muhen nach Entfelden über Rütihof, Gränichen und Suhr. Mit einer Länge von 18,34 km und einem Gesamtaufstieg von 257 m bietet die Tour abwechslungsreiche Landschaften und moderate Herausforderungen. Genieße eine ausgewogene Strecke mit einem Gesamtabstieg von 252 m, ideal für ein entspanntes Radfahren"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Muhen%20AG.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Muhen%20AG.svg"
-teaser_image: ./images/teaser/ruetihof_graenichen_suhr_entfelden.png
+teaser_image: ./images/teaser/ruetihof_graenichen_suhr_entfelden.webp
 gpx_download: /gpx/ruetihof_graenichen_suhr_entfelden.gpx
 ---

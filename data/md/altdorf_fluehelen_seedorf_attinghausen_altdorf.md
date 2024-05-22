@@ -31,7 +31,7 @@ difficulty: "Mit einem moderaten Gesamtaufstieg von 375 Metern und einem Gesamta
 description: "Erkunden Sie die malerische Wanderung von Altdorf über Flühelen und Seedorf nach Attinghausen und zurück. Genießen Sie die herrliche Landschaft entlang des Weges, der 17,08 km lang ist"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Altdorf-coat%20of%20arms.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Altdorf-coat%20of%20arms.svg"
-teaser_image: ./images/teaser/altdorf_fluehelen_seedorf_attinghausen_altdorf.png
+teaser_image: ./images/teaser/altdorf_fluehelen_seedorf_attinghausen_altdorf.webp
 gpx_download: /gpx/altdorf_fluehelen_seedorf_attinghausen_altdorf.gpx
 ---
 trackpoints: 

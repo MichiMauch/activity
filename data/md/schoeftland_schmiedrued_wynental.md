@@ -31,7 +31,7 @@ difficulty: "Bewertung: mittel."
 description: "Die 'Schöftland - Schmiedrued - Wynental' Fahrradtour beginnt in Muhen, Schweiz und erstreckt sich über 38.10 km. Die Gesamtdauer beträgt 1h 55min mit Pausen. Die Strecke umfasst einen Gesamtaufstieg von 377 Metern und einen Gesamtabstieg von 372 Metern"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Muhen%20AG.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Wappen%20Muhen%20AG.svg"
-teaser_image: ./images/teaser/schoeftland_schmiedrued_wynental.png
+teaser_image: ./images/teaser/schoeftland_schmiedrued_wynental.webp
 gpx_download: /gpx/schoeftland_schmiedrued_wynental.gpx
 ---
 trackpoints: 

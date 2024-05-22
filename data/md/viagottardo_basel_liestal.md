@@ -31,6 +31,6 @@ difficulty: "Bewertung: mittel."
 description: "Erkunde die ViaGottardo zwischen Basel und Liestal. Die 21,31 km lange Strecke dauert insgesamt 4 Std. 18 Min., Pausen inklusive. Genieße einen Gesamtaufstieg von 535 m und einen Gesamtabstieg von 479 m"
 coat_of_arms_url: ""
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Coat%20of%20arms%20of%20Liestal.svg"
-teaser_image: ./images/teaser/viagottardo_basel_liestal.png
+teaser_image: ./images/teaser/viagottardo_basel_liestal.webp
 gpx_download: /gpx/viagottardo_basel_liestal.gpx
 ---

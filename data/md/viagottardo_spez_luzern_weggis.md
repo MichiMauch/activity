@@ -31,6 +31,6 @@ difficulty: "Die Route umfasst eine Vielzahl von landschaftlichen Höhepunkten u
 description: "Die ViaGottardo Spez: Luzern - Weggis ist eine malerische Wanderstrecke in Luzern, Schweiz. Mit einer Länge von 25,77 km bietet sie atemberaubende Ausblicke und führt entlang einiger historischer Sehenswürdigkeiten. Der Gesamtaufstieg von 437 Metern und der Gesamtabstieg von 438 Metern sind ausgewogen und bieten eine angenehme Herausforderung"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Luzern%20COA.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/CHE%20Weggis%20COA.svg"
-teaser_image: ./images/teaser/viagottardo_spez_luzern_weggis.png
+teaser_image: ./images/teaser/viagottardo_spez_luzern_weggis.webp
 gpx_download: /gpx/viagottardo_spez_luzern_weggis.gpx
 ---

@@ -31,7 +31,7 @@ difficulty: "Bewertung: mittel."
 description: "Die ViaGottardo-Route von Altdorf nach Gurtnellen erstreckt sich über 23.07 km in der malerischen Schweiz. Mit einem Gesamtaufstieg von 594 Metern und einem Gesamtabstieg von 371 Metern bietet sie eine perfekte Mischung aus Herausforderung und Entspannung. In nur 4 Stunden und 46 Minuten, einschließlich Pausen, können Sie die Schönheit dieser Strecke genießen"
 coat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Altdorf-coat%20of%20arms.svg"
 endcoat_of_arms_url: "http://commons.wikimedia.org/wiki/Special:FilePath/Gurtnellen%20Wappen.svg"
-teaser_image: ./images/teaser/viagottardo_altdorf_gurtnellen.png
+teaser_image: ./images/teaser/viagottardo_altdorf_gurtnellen.webp
 gpx_download: /gpx/viagottardo_altdorf_gurtnellen.gpx
 ---
 
